@@ -1,4 +1,4 @@
-FROM sharelatex/sharelatex:5.0.4
+FROM sharelatex/sharelatex:latest
 
 COPY check_tex.sh check_tex.sh
 RUN chmod +x check_tex.sh && ./check_tex.sh
