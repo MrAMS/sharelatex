@@ -1,8 +1,12 @@
 FROM sharelatex/sharelatex:latest
 
-COPY check_tex.sh check_tex.sh
-RUN chmod +x check_tex.sh && ./check_tex.sh
-RUN tlmgr update --self && tlmgr install scheme-full
+# ref: https://www.tug.org/texlive/upgrade.html
+RUN cd /usr/local/texlive/ && \
+    mv $(latex --version | head -n 1 | awk '{gsub(/\)/, "", $NF); print $NF}') 2024 && \
+    sed -i 's/texlive\/2021/texlive\/2024/g' ~/.bashrc && \
+    source ~/.bashrc && wget https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet/update-tlmgr-latest.sh && \
+    sh update-tlmgr-latest.sh -- --upgrade
+RUN tlmgr option repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet && tlmgr update --self --all && tlmgr install scheme-full
 
 # 使用minted包
 RUN apt update && apt install -y \
